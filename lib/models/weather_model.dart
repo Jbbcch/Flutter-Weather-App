@@ -1,10 +1,7 @@
-import 'dart:convert';
-
+//generated using QuickType. both a blessing and a curse.
 //TODO: write comments for how this works
-
-Weather weatherFromJson(String str) => Weather.fromJson(json.decode(str));
-
-String weatherToJson(Weather data) => json.encode(data.toJson());
+//TODO: make getters to ease the value fetching maybe? these are so many fields and variables here - it's hell
+//TODO: actually just rewrite this thing if you have the time
 
 class Weather {
     double lat;
@@ -62,7 +59,7 @@ class Current {
     int windDeg;
     List<WeatherElement> weather;
     double? windGust;
-    int? pop;
+    double? pop;
 
     Current({
         required this.dt,
@@ -99,7 +96,7 @@ class Current {
         windDeg: json["wind_deg"],
         weather: List<WeatherElement>.from(json["weather"].map((x) => WeatherElement.fromJson(x))),
         windGust: json["wind_gust"]?.toDouble(),
-        pop: json["pop"],
+        pop: json["pop"]?.toDouble(),
     );
 
     Map<String, dynamic> toJson() => {
