@@ -1,13 +1,11 @@
 //generated using QuickType. both a blessing and a curse.
-//TODO: write comments for how this works
-//TODO: make getters to ease the value fetching maybe? these are so many fields and variables here - it's hell
-//TODO: actually just rewrite this thing if you have the time
+//TODO: write comments for what all the fields are (in progress)
 
 class Weather {
     double lat;
     double lon;
     String timezone;
-    int timezoneOffset;
+    int timezoneOffset; //important for datetime: this needs to be added to the date values to get the local time of the searched location
     Current current;
     List<Current> hourly;
     List<Daily> daily;
@@ -26,43 +24,33 @@ class Weather {
         lat: json["lat"]?.toDouble(),
         lon: json["lon"]?.toDouble(),
         timezone: json["timezone"],
-        timezoneOffset: json["timezone_offset"],
+        timezoneOffset: json["timezone_offset"] * 1000, //the api returns all time as int from epoch start but smaller by 1000 times (why?)
         current: Current.fromJson(json["current"]),
         hourly: List<Current>.from(json["hourly"].map((x) => Current.fromJson(x))),
         daily: List<Daily>.from(json["daily"].map((x) => Daily.fromJson(x))),
     );
-
-    Map<String, dynamic> toJson() => {
-        "lat": lat,
-        "lon": lon,
-        "timezone": timezone,
-        "timezone_offset": timezoneOffset,
-        "current": current.toJson(),
-        "hourly": List<dynamic>.from(hourly.map((x) => x.toJson())),
-        "daily": List<dynamic>.from(daily.map((x) => x.toJson())),
-    };
 }
 
 class Current {
-    int dt;
-    int? sunrise;
-    int? sunset;
+    int date;
+    int? sunrise; //timestamp for sunrise
+    int? sunset; //timestamp for sunset
     double temp;
     double feelsLike;
     int pressure;
     int humidity;
-    double dewPoint;
-    double uvi;
-    int clouds;
-    int visibility;
-    double windSpeed;
-    int windDeg;
+    double dewPoint; //the temperature the air needs to be cooled to in order to achieve a relative humidity of 100%
+    double uvi; //ultraviolet index
+    int clouds; //percentage value of sky coverage by clouds
+    int visibility; //in meters
+    double windSpeed; 
+    int windDeg; //wind direction in degrees
     List<WeatherElement> weather;
-    double? windGust;
-    double? pop;
+    double? windGust; //highest recorded wind speed in a short duration
+    double? pop; //probability of precipitation - percentage value chance of rain
 
     Current({
-        required this.dt,
+        required this.date,
         this.sunrise,
         this.sunset,
         required this.temp,
@@ -81,9 +69,9 @@ class Current {
     });
 
     factory Current.fromJson(Map<String, dynamic> json) => Current(
-        dt: json["dt"],
-        sunrise: json["sunrise"],
-        sunset: json["sunset"],
+        date: json["dt"] * 1000,
+        sunrise: json["sunrise"] != null ? json["sunrise"] * 1000 : null, //the api returns this time as nullable int here so have to do this check
+        sunset: json["sunset"] != null ? json["sunset"] * 1000 : null, //same here as above
         temp: json["temp"]?.toDouble(),
         feelsLike: json["feels_like"]?.toDouble(),
         pressure: json["pressure"],
@@ -98,25 +86,6 @@ class Current {
         windGust: json["wind_gust"]?.toDouble(),
         pop: json["pop"]?.toDouble(),
     );
-
-    Map<String, dynamic> toJson() => {
-        "dt": dt,
-        "sunrise": sunrise,
-        "sunset": sunset,
-        "temp": temp,
-        "feels_like": feelsLike,
-        "pressure": pressure,
-        "humidity": humidity,
-        "dew_point": dewPoint,
-        "uvi": uvi,
-        "clouds": clouds,
-        "visibility": visibility,
-        "wind_speed": windSpeed,
-        "wind_deg": windDeg,
-        "weather": List<dynamic>.from(weather.map((x) => x.toJson())),
-        "wind_gust": windGust,
-        "pop": pop,
-    };
 }
 
 class WeatherElement {
@@ -138,13 +107,6 @@ class WeatherElement {
         description: descriptionValues.map[json["description"]]!,
         icon: json["icon"],
     );
-
-    Map<String, dynamic> toJson() => {
-        "id": id,
-        "main": mainValues.reverse[main],
-        "description": descriptionValues.reverse[description],
-        "icon": icon,
-    };
 }
 
 enum Description {
@@ -178,29 +140,29 @@ final mainValues = EnumValues({
 });
 
 class Daily {
-    int dt;
-    int sunrise;
-    int sunset;
-    int moonrise;
-    int moonset;
+    int date;
+    int sunrise; //timestamp for sunrise
+    int sunset; //timestamp for sunset
+    int moonrise; //timestamp for moonrise
+    int moonset; //timestamp for moonset
     double moonPhase;
     String summary;
     Temp temp;
     FeelsLike feelsLike;
     int pressure;
     int humidity;
-    double dewPoint;
+    double dewPoint; //the temperature the air needs to be cooled to in order to achieve a relative humidity of 100%
     double windSpeed;
-    int windDeg;
-    double windGust;
+    int windDeg; //wind direction in degrees
+    double windGust; //highest recorded wind speed in a short duration
     List<WeatherElement> weather;
     int clouds;
-    double pop;
-    double uvi;
+    double pop; //probability of precipitation - percentage value chance of rain
+    double uvi; //ultraviolet index
     double? rain;
 
     Daily({
-        required this.dt,
+        required this.date,
         required this.sunrise,
         required this.sunset,
         required this.moonrise,
@@ -223,11 +185,11 @@ class Daily {
     });
 
     factory Daily.fromJson(Map<String, dynamic> json) => Daily(
-        dt: json["dt"],
-        sunrise: json["sunrise"],
-        sunset: json["sunset"],
-        moonrise: json["moonrise"],
-        moonset: json["moonset"],
+        date: json["dt"] * 1000,
+        sunrise: json["sunrise"] * 1000,
+        sunset: json["sunset"] * 1000,
+        moonrise: json["moonrise"] * 1000,
+        moonset: json["moonset"] * 1000,
         moonPhase: json["moon_phase"]?.toDouble(),
         summary: json["summary"],
         temp: Temp.fromJson(json["temp"]),
@@ -244,36 +206,13 @@ class Daily {
         uvi: json["uvi"]?.toDouble(),
         rain: json["rain"]?.toDouble(),
     );
-
-    Map<String, dynamic> toJson() => {
-        "dt": dt,
-        "sunrise": sunrise,
-        "sunset": sunset,
-        "moonrise": moonrise,
-        "moonset": moonset,
-        "moon_phase": moonPhase,
-        "summary": summary,
-        "temp": temp.toJson(),
-        "feels_like": feelsLike.toJson(),
-        "pressure": pressure,
-        "humidity": humidity,
-        "dew_point": dewPoint,
-        "wind_speed": windSpeed,
-        "wind_deg": windDeg,
-        "wind_gust": windGust,
-        "weather": List<dynamic>.from(weather.map((x) => x.toJson())),
-        "clouds": clouds,
-        "pop": pop,
-        "uvi": uvi,
-        "rain": rain,
-    };
 }
 
-class FeelsLike {
-    double day;
-    double night;
-    double eve;
-    double morn;
+class FeelsLike { //what the temperature feels like to fellow humans.
+    double day; //average temp during daytime
+    double night; //average temp during nighttime
+    double eve; //average temp in the evening
+    double morn; //average temp in the morning
 
     FeelsLike({
         required this.day,
@@ -288,22 +227,15 @@ class FeelsLike {
         eve: json["eve"]?.toDouble(),
         morn: json["morn"]?.toDouble(),
     );
-
-    Map<String, dynamic> toJson() => {
-        "day": day,
-        "night": night,
-        "eve": eve,
-        "morn": morn,
-    };
 }
 
 class Temp {
-    double day;
+    double day; //average temp during daytime
     double min;
     double max;
-    double night;
-    double eve;
-    double morn;
+    double night; //average temp during nighttime
+    double eve; //average temp in the evening
+    double morn; //average temp in the morning
 
     Temp({
         required this.day,
@@ -322,15 +254,6 @@ class Temp {
         eve: json["eve"]?.toDouble(),
         morn: json["morn"]?.toDouble(),
     );
-
-    Map<String, dynamic> toJson() => {
-        "day": day,
-        "min": min,
-        "max": max,
-        "night": night,
-        "eve": eve,
-        "morn": morn,
-    };
 }
 
 class EnumValues<T> {
