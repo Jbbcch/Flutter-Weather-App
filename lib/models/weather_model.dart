@@ -5,7 +5,7 @@ class Weather {
     double lat;
     double lon;
     String timezone;
-    int timezoneOffset; //important for datetime: this needs to be added to the date values to get the local time of the searched location
+    int timezoneOffset;
     Current current;
     List<Current> hourly;
     List<Daily> daily;

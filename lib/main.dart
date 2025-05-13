@@ -8,7 +8,7 @@ void main() async{
   await dotenv.load(); //load the .env file with api key
   var location = await determinePosition();
   final weather = await WeatherService.getWeather(location.latitude, location.longitude, dotenv.env['API_KEY']);
-  final date = DateTime.fromMillisecondsSinceEpoch(weather.current.sunrise! + weather.timezoneOffset);
+  final date = DateTime.fromMillisecondsSinceEpoch(weather.current.date);
   print(date);
   runApp(WeatherApp());
 }
@@ -34,4 +34,4 @@ class WeatherApp extends StatelessWidget {
       ),
     );
   }
-}
+} 
