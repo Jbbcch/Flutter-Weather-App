@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_weather_app/models/weather_model.dart';
+import 'package:flutter_weather_app/widgets/hourly_list.dart';
 
 class HomePage extends StatelessWidget {
   final Weather weatherData;
@@ -11,18 +12,18 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: Icon(Icons.search), //placeholder, switch to IconButton later
-        title: Text(weatherData.timezone),
+        title: Text(weatherData.timezone), //placeholder, need more precise location
       ),
       body: Column(
         children: <Widget>[
           Center(
             child: Text(
-              "${weatherData.current.temp.round()}\u00b0",
+              "${weatherData.current.temp.round()}\u00b0", //display current temperature
               textScaler: TextScaler.linear(5),
-              style: TextStyle(fontFamily: ""),
             ),
-            heightFactor: 2,
+            heightFactor: 2, //for empty space. replace with padding later
           ),
+          HourlyList(hourlyData: weatherData.hourly), //list of hourly weather as a scrollable horizontal list
         ],
       ),
     );
