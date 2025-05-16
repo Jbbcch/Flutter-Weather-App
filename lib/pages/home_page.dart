@@ -1,29 +1,43 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_weather_app/models/weather_model.dart';
-import 'package:flutter_weather_app/widgets/hourly_list.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomePage extends StatelessWidget {
-  final Weather weatherData;
+import '/providers/weather_provider.dart';
+import '/widgets/hourly_list.dart';
 
-  const HomePage({super.key, required this.weatherData});
+class HomePage extends ConsumerWidget {
+  const HomePage({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final weatherData = ref.watch(localWeatherProvider); //load weather data
+
     return Scaffold(
       appBar: AppBar(
         leading: Icon(Icons.search), //placeholder, switch to IconButton later
-        title: Text(weatherData.timezone), //placeholder, need more precise location
+        title: weatherData.when(
+          data: (weather) => Text(weather.timezone),
+          loading: () => const Text("Loading..."),
+          error: (e, _) => const Text("Error"),
+        ),
       ),
       body: Column(
         children: <Widget>[
           Center(
-            child: Text(
-              "${weatherData.current.temp.round()}\u00b0", //display current temperature
-              textScaler: TextScaler.linear(5),
+            child: weatherData.when(
+              data: (weather) => Text(
+                "${weather.current.temp.round()}\u00b0",
+                textScaler: TextScaler.linear(5),
+              ),
+              loading: () => const CircularProgressIndicator(),
+              error: (e, _) => const Text("Failed to load temperature"),
             ),
             heightFactor: 2, //for empty space. replace with padding later
           ),
-          HourlyList(hourlyData: weatherData.hourly), //list of hourly weather as a scrollable horizontal list
+          weatherData.when(
+            data: (weather) => HourlyList(hourlyData: weather.hourly),
+            loading: () => const Center(child: Text("Loading hourly data...")),
+            error: (e, _) => const Text("Hourly data unavailable"),
+          ), //list of hourly weather as a scrollable horizontal list
         ],
       ),
     );

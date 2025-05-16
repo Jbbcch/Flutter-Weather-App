@@ -1,6 +1,6 @@
 name: flutter_weather_app
 description: A weather app for android built using flutter
-version: 0.4.1
+version: 0.5.0
 
 environment: 
   sdk: ">=3.7.0"
@@ -9,6 +9,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_dotenv: ^5.2.1
+  flutter_riverpod: ^2.6.1
   http: ^1.4.0
   geolocator: ^14.0.0
 

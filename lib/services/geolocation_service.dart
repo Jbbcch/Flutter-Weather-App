@@ -1,6 +1,6 @@
 import 'package:geolocator/geolocator.dart';
 
-//add exception handling
+//TODO: add fallbacks for errors using last known location
 
 Future<Position> determinePosition() async {
   bool serviceEnabled;

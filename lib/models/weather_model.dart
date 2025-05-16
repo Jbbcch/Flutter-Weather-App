@@ -91,7 +91,7 @@ class Current {
 class WeatherElement {
     int id;
     Main main;
-    Description description;
+    Description? description;
     String icon;
 
     WeatherElement({
@@ -104,7 +104,7 @@ class WeatherElement {
     factory WeatherElement.fromJson(Map<String, dynamic> json) => WeatherElement(
         id: json["id"],
         main: mainValues.map[json["main"]]!,
-        description: descriptionValues.map[json["description"]]!,
+        description: descriptionValues.map[json["description"]],
         icon: json["icon"],
     );
 }
