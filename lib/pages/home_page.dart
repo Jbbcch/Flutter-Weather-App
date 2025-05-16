@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '/providers/weather_provider.dart';
 import '/providers/geolocation_provider.dart';
 import '/widgets/hourly_list.dart';
+import '/widgets/error_widget.dart';
 
 //TODO: split this. it's getting crowded.
 
@@ -42,18 +43,21 @@ class HomePage extends ConsumerWidget {
         body: Center(child: CircularProgressIndicator()),
       ),
       
-      error: (e, _) => Scaffold(
-        appBar: AppBar(
+      error: (e, _) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          showErrorDialog(
+            context,
+            e,
+            () => ref.invalidate(geolocationProvider),
+          );
+        });
+        return Scaffold(
+          appBar: AppBar(
           leading: Icon(Icons.search),
-          title: const Text("Error"),
+          title: Text("Error"),
         ),
-        body: Center(
-          child: ElevatedButton(
-            onPressed: () => ref.invalidate(geolocationProvider),
-            child: const Text("Retry"),
-          ),
-        ),
-      ),
+        );
+      }
     );
   }
 }

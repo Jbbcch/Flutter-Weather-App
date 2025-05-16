@@ -25,21 +25,34 @@ Future<Coordinates> determinePosition() async {
   if (permission == LocationPermission.deniedForever) {
     //permissions are denied forever, handle appropriately.
     //ask to turn them on for current location functionality
-    return Future.error('Location permissions are permanently denied, we cannot request permissions.');
-  } 
+    return Future.error('Location permissions are permanently denied, we cannot request permissions.\nOpen app settings and go to permissions.');
+  }
 
   serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      //service disabled, so get last known location
-      final cachedLocation = await _getCachedLocation();
-      if (cachedLocation != null) {
-        return Coordinates(latitude: cachedLocation.latitude, longitude: cachedLocation.longitude);
-      }
-      return Future.error('Location services are disabled. No last known location.');
+  if (!serviceEnabled) {
+    //service disabled, so get last known location
+    final cachedLocation = await _getCachedLocation();
+    if (cachedLocation != null) {
+      return Coordinates(latitude: cachedLocation.latitude, longitude: cachedLocation.longitude);
     }
+    return Future.error('Location services are disabled.' +
+      '\nNo last known location.' +
+      '\nPlease turn on geolocation and retry.' +
+      '\nThe first loading screen may take a minute.'
+    );
+  }
 
   //if this is reached, then the location should be available
-  final location = await Geolocator.getCurrentPosition();
+  final location = await Geolocator.getCurrentPosition().timeout(
+    Duration(seconds: 5),
+    //the gps gets confused if turned on mid-runtime. this is here to address that
+    //TODO: improve this maybe?
+    onTimeout: () => Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.best,
+      forceAndroidLocationManager: true
+    ), //this takes longer so only use if gps is stuck
+  );
+
   //cache the location
   _cacheLocation(location.latitude, location.longitude);
 
