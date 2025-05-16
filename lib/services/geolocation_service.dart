@@ -1,18 +1,17 @@
 import 'package:geolocator/geolocator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-//TODO: add fallbacks for errors using last known location
+//simple class to wrap coordinates. move this elswhere if needed.
+class Coordinates {
+  final latitude;
+  final longitude;
 
-Future<Position> determinePosition() async {
+  Coordinates({required this.latitude, required this.longitude});
+}
+
+Future<Coordinates> determinePosition() async {
   bool serviceEnabled;
   LocationPermission permission;
-
-  //test if location services are enabled.
-  serviceEnabled = await Geolocator.isLocationServiceEnabled();
-  if (!serviceEnabled) {
-    //handle this by asking to turn them on and restart the app, maybe
-    //or use last known location
-    return Future.error('Location services are disabled.');
-  }
 
   permission = await Geolocator.checkPermission();
   if (permission == LocationPermission.denied) {
@@ -22,13 +21,48 @@ Future<Position> determinePosition() async {
       return Future.error('Location permissions are denied.');
     }
   }
-  
+    
   if (permission == LocationPermission.deniedForever) {
     //permissions are denied forever, handle appropriately.
     //ask to turn them on for current location functionality
     return Future.error('Location permissions are permanently denied, we cannot request permissions.');
   } 
 
+  serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      //service disabled, so get last known location
+      final cachedLocation = await _getCachedLocation();
+      if (cachedLocation != null) {
+        return Coordinates(latitude: cachedLocation.latitude, longitude: cachedLocation.longitude);
+      }
+      return Future.error('Location services are disabled. No last known location.');
+    }
+
   //if this is reached, then the location should be available
-  return await Geolocator.getCurrentPosition();
+  final location = await Geolocator.getCurrentPosition();
+  //cache the location
+  _cacheLocation(location.latitude, location.longitude);
+
+  return Coordinates(latitude: location.latitude, longitude: location.longitude);
+} 
+
+//fucntion to cache the location
+Future<void> _cacheLocation(double lat, double lon) async {
+  final prefs = await SharedPreferences.getInstance(); //use shared preferences
+
+  prefs.setDouble('last_lat', lat);
+  prefs.setDouble('last_lon', lon);
+}
+
+//function to get the cached values if they exist
+Future<Coordinates?> _getCachedLocation() async {
+  final prefs = await SharedPreferences.getInstance();
+
+  final lat = prefs.getDouble('last_lat');
+  final lon = prefs.getDouble('last_lon');
+
+  if (lat != null && lon != null) { //if cache exists return the stored values
+    return Coordinates(latitude: lat, longitude: lon);
+  }
+  return null;
 }
