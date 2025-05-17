@@ -49,7 +49,10 @@ Future<Coordinates> determinePosition() async {
     onTimeout: () => Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.low,
       forceAndroidLocationManager: true
-    ), //this takes longer so only use if gps is stuck
+    ).timeout(
+      Duration(seconds: 25),
+      onTimeout: () => Future.error("GPS service on your device is taking too long")
+    ) //this takes longer so only use if gps is stuck
   );
 
   //cache the location

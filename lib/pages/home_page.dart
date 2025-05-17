@@ -3,8 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '/providers/weather_provider.dart';
 import '/providers/geolocation_provider.dart';
+import '/widgets/weather_tiles.dart';
 import '/widgets/hourly_list.dart';
 import '/widgets/error_widget.dart';
+import '/pages/error_placeholder.dart';
 
 //TODO: split this. it's getting crowded.
 
@@ -23,13 +25,7 @@ class HomePage extends ConsumerWidget {
         ),
         body: Column(
           children: <Widget>[
-            Center(
-              child: Text(
-                "${weather.current.temp.round()}\u00b0",
-                textScaler: TextScaler.linear(5),
-              ),
-              heightFactor: 2, // spacing
-            ),
+            WeatherTiles(weatherData: weather),
             HourlyList(hourlyData: weather.hourly),
           ],
         ),
@@ -44,27 +40,12 @@ class HomePage extends ConsumerWidget {
       ),
       
       error: (e, _) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
           showErrorDialog(
             context,
             e,
             () => ref.invalidate(geolocationProvider),
           );
-        });
-        //TODO: move this to a seperate placeholder page
-        return Scaffold(
-          appBar: AppBar(
-            leading: Icon(Icons.search),
-            title: Text("Error"),
-          ),
-          body: Align(
-            child: ElevatedButton(
-              onPressed: () => ref.invalidate(geolocationProvider), 
-              child: Text("Restart Services"),
-            ),
-            alignment: Alignment(0, -0.2),
-          ),
-        );
+        return ErrorPlaceholder(function: () => ref.invalidate(geolocationProvider)); //return a placeholder error page
       }
     );
   }

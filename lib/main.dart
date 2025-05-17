@@ -17,6 +17,28 @@ class WeatherApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) { //calling the constructor automatically initiates build()
     return MaterialApp(
+      //TODO: move theme elsewhere
+      theme: ThemeData(
+        scaffoldBackgroundColor: Colors.blueAccent,
+        appBarTheme: AppBarTheme(
+          backgroundColor: Colors.blueAccent,
+          iconTheme: IconThemeData(
+            color: Colors.white
+          ),
+          titleTextStyle: TextStyle(
+            fontSize: 24,
+            color: Colors.white
+          )
+        ),
+        iconTheme: IconThemeData(
+          color: Colors.white
+        ),
+        textTheme: TextTheme(
+          bodyMedium: TextStyle(
+            color: Colors.white
+          )
+        )
+      ),
       home: HomePage(),
     );
   }
