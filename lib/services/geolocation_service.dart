@@ -43,7 +43,7 @@ Future<Coordinates> determinePosition() async {
 
   //if this is reached, then the location should be available
   final location = await Geolocator.getCurrentPosition().timeout(
-    Duration(seconds: 2),
+    Duration(seconds: 5),
     //the gps gets confused if turned on mid-runtime. this is here to address that
     //10 seconds is as fast as i could get this to work
     onTimeout: () => Geolocator.getCurrentPosition(

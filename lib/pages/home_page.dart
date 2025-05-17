@@ -51,11 +51,19 @@ class HomePage extends ConsumerWidget {
             () => ref.invalidate(geolocationProvider),
           );
         });
+        //TODO: move this to a seperate placeholder page
         return Scaffold(
           appBar: AppBar(
-          leading: Icon(Icons.search),
-          title: Text("Error"),
-        ),
+            leading: Icon(Icons.search),
+            title: Text("Error"),
+          ),
+          body: Align(
+            child: ElevatedButton(
+              onPressed: () => ref.invalidate(geolocationProvider), 
+              child: Text("Restart Services"),
+            ),
+            alignment: Alignment(0, -0.2),
+          ),
         );
       }
     );
