@@ -37,18 +37,17 @@ Future<Coordinates> determinePosition() async {
     }
     return Future.error('Location services are disabled.' +
       '\nNo last known location.' +
-      '\nPlease turn on geolocation and retry.' +
-      '\nThe first loading screen may take a minute.'
+      '\nPlease turn on geolocation and retry.'
     );
   }
 
   //if this is reached, then the location should be available
   final location = await Geolocator.getCurrentPosition().timeout(
-    Duration(seconds: 5),
+    Duration(seconds: 2),
     //the gps gets confused if turned on mid-runtime. this is here to address that
-    //TODO: improve this maybe?
+    //10 seconds is as fast as i could get this to work
     onTimeout: () => Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.best,
+      desiredAccuracy: LocationAccuracy.low,
       forceAndroidLocationManager: true
     ), //this takes longer so only use if gps is stuck
   );
