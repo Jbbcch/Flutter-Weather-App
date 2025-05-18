@@ -50,8 +50,10 @@ Future<Coordinates> determinePosition() async {
       desiredAccuracy: LocationAccuracy.low,
       forceAndroidLocationManager: true
     ).timeout(
-      Duration(seconds: 25),
-      onTimeout: () => Future.error("GPS service on your device is taking too long")
+      Duration(seconds: 15),
+      onTimeout: () => Future.error("GPS service on your device is taking too long." +
+        "\nTry turning on both GPS and WiFi and retry."
+      )
     ) //this takes longer so only use if gps is stuck
   );
 

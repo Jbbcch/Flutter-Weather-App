@@ -90,8 +90,8 @@ class Current {
 
 class WeatherElement {
     int id;
-    Main main;
-    Description? description;
+    String main;
+    String? description;
     String icon;
 
     WeatherElement({
@@ -103,41 +103,11 @@ class WeatherElement {
 
     factory WeatherElement.fromJson(Map<String, dynamic> json) => WeatherElement(
         id: json["id"],
-        main: mainValues.map[json["main"]]!,
-        description: descriptionValues.map[json["description"]],
+        main: json["main"]!,
+        description: json["description"],
         icon: json["icon"],
     );
 }
-
-enum Description {
-    BROKEN_CLOUDS,
-    CLEAR_SKY,
-    FEW_CLOUDS,
-    LIGHT_RAIN,
-    OVERCAST_CLOUDS,
-    SCATTERED_CLOUDS
-}
-
-final descriptionValues = EnumValues({
-    "broken clouds": Description.BROKEN_CLOUDS,
-    "clear sky": Description.CLEAR_SKY,
-    "few clouds": Description.FEW_CLOUDS,
-    "light rain": Description.LIGHT_RAIN,
-    "overcast clouds": Description.OVERCAST_CLOUDS,
-    "scattered clouds": Description.SCATTERED_CLOUDS
-});
-
-enum Main {
-    CLEAR,
-    CLOUDS,
-    RAIN
-}
-
-final mainValues = EnumValues({
-    "Clear": Main.CLEAR,
-    "Clouds": Main.CLOUDS,
-    "Rain": Main.RAIN
-});
 
 class Daily {
     int date;

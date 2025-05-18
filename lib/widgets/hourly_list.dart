@@ -10,18 +10,19 @@ class HourlyList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(
+        vertical: 10,
         horizontal: 10
       ),
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.2),
+          color: Colors.white.withOpacity(0.1),
           borderRadius: BorderRadius.circular(16)
         ),
         padding: EdgeInsets.symmetric(
           vertical: 10,
           horizontal: 10
         ),
-        height: 100,
+        height: 120,
         child: Center(
           child: ListView(
             scrollDirection: Axis.horizontal,
@@ -37,7 +38,8 @@ class HourlyList extends StatelessWidget {
                       textScaler: TextScaler.linear(1.5),
                     ),
                     Icon(IconMap[supposedIcon]), //gets the icon from icon map
-                    Text("${date.hour}:00"), //display the forecast time
+                    Text("${hourlyData[index].windSpeed.toStringAsPrecision(2)} km/h"),
+                    Text("${date.hour.toString().padLeft(2, '0')}:00"), //display the forecast time
                   ],
                 )
               );

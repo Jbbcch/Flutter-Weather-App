@@ -19,9 +19,9 @@ class WeatherApp extends StatelessWidget {
     return MaterialApp(
       //TODO: move theme elsewhere
       theme: ThemeData(
-        scaffoldBackgroundColor: Colors.blueAccent,
+        scaffoldBackgroundColor: Colors.black87,
         appBarTheme: AppBarTheme(
-          backgroundColor: Colors.blueAccent,
+          backgroundColor: Colors.black87,
           iconTheme: IconThemeData(
             color: Colors.white
           ),

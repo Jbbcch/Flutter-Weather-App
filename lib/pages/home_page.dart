@@ -7,6 +7,7 @@ import '/widgets/weather_tiles.dart';
 import '/widgets/hourly_list.dart';
 import '/widgets/error_widget.dart';
 import '/pages/error_placeholder.dart';
+import '/models/gradients.dart';
 
 //TODO: split this. it's getting crowded.
 
@@ -18,18 +19,62 @@ class HomePage extends ConsumerWidget {
     final weatherData = ref.watch(localWeatherProvider); //load weather data
 
     return weatherData.when(
-      data: (weather) => Scaffold(
-        appBar: AppBar(
-          leading: Icon(Icons.search), // placeholder
-          title: Text(weather.timezone),
-        ),
-        body: Column(
-          children: <Widget>[
-            WeatherTiles(weatherData: weather),
-            HourlyList(hourlyData: weather.hourly),
-          ],
-        ),
-      ),
+      data: (weather) {
+        final weatherType = weather.current.weather.first.main;
+        final gradient = weatherGradients[weatherType] ?? weatherGradients['Default']!;
+
+        return Scaffold(
+          appBar: AppBar(
+            leading: Icon(Icons.search),
+            title: Text(weather.timezone),
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+          ),
+          extendBodyBehindAppBar: true,
+          body: Container(
+            constraints: BoxConstraints.expand(),
+            decoration: BoxDecoration(gradient: gradient),
+            child: SafeArea(
+              child: SingleChildScrollView(
+                padding: EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    WeatherTiles(weatherData: weather),
+                    SizedBox(height: 10),
+                    TextButton(
+                      onPressed: () => print("pressed"),
+                      child: Container(
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.4),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Center(
+                          child: Text(
+                            "Weekly Forecast",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      "Hourly Weather:",
+                      textScaleFactor: 1.4,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    HourlyList(hourlyData: weather.hourly),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
 
       loading: () => Scaffold(
         appBar: AppBar(
@@ -38,15 +83,15 @@ class HomePage extends ConsumerWidget {
         ),
         body: Center(child: CircularProgressIndicator()),
       ),
-      
+
       error: (e, _) {
-          showErrorDialog(
-            context,
-            e,
-            () => ref.invalidate(geolocationProvider),
-          );
-        return ErrorPlaceholder(function: () => ref.invalidate(geolocationProvider)); //return a placeholder error page
-      }
+        showErrorDialog(
+          context,
+          e,
+          () => ref.invalidate(geolocationProvider),
+        );
+        return ErrorPlaceholder(function: () => ref.invalidate(geolocationProvider));
+      },
     );
   }
 }
