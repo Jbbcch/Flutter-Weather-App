@@ -11,15 +11,45 @@ class ErrorPlaceholder extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Icon(Icons.search),
+        leading: Icon(Icons.error),
         title: Text("Error"),
       ),
-      body: Align(
-        child: ElevatedButton(
-          onPressed: function, 
-          child: Text("Restart Services"),
+      body: Center(
+        child: Container(
+          height: 200,
+          child: Column(
+            spacing: 10,
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(16)
+                ),
+                child: Text(
+                  "It seems the app ran\ninto an error. Restart?",
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.blueAccent
+                  ),
+                ),
+              ),
+              ElevatedButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.blueAccent
+                ),
+                onPressed: function, 
+                child: Text(
+                  "Restart Services",
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.white
+                  ),
+                ),
+              ),
+            ]
+          ),
         ),
-        alignment: Alignment(0, -0.2),
       ),
     );
   }

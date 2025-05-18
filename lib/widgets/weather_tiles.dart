@@ -19,7 +19,7 @@ class WeatherTiles extends StatelessWidget {
       padding: EdgeInsets.symmetric(
         horizontal: 10
       ),
-      height: 350, //TODO: ditch this for an Extended wrapper
+      height: 350, 
       child: Row(
         spacing: 10,
         children: <Widget>[
@@ -40,7 +40,7 @@ class WeatherTiles extends StatelessWidget {
                           children: <Widget>[
                             Text(
                               "${weatherData.current.temp.round()}\u00b0",
-                              textScaleFactor: 6, //depricated. replace.
+                              textScaleFactor: 6,
                             ),
                             Text(
                               "${weatherData.current.weather.first.main} " +
@@ -194,16 +194,20 @@ class WeatherTiles extends StatelessWidget {
                                   textScaleFactor: 1.2,
                                   overflow: TextOverflow.ellipsis,
                                 ),
-                                Text(
-                                  "Speed:",
-                                  textScaleFactor: 1.2,
-                                  overflow: TextOverflow.ellipsis,
+                                FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    "Speed:",
+                                    textScaleFactor: 1.2,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
                                 ),
                                 FittedBox(
                                   fit: BoxFit.scaleDown,
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                    "${weatherData.current.windSpeed.toStringAsPrecision(2)} km/h",
+                                    "${weatherData.current.windSpeed.toStringAsFixed(1)} km/h",
                                     textScaleFactor: 1.2,
                                     overflow: TextOverflow.ellipsis,
                                   ),

@@ -10,7 +10,6 @@ class HourlyList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(
-        vertical: 10,
         horizontal: 10
       ),
       child: Container(
@@ -22,29 +21,48 @@ class HourlyList extends StatelessWidget {
           vertical: 10,
           horizontal: 10
         ),
-        height: 120,
-        child: Center(
-          child: ListView(
-            scrollDirection: Axis.horizontal,
-            children: List<Widget>.generate(24, (int index) { //generate 24 hour list
-              DateTime date = DateTime.fromMillisecondsSinceEpoch(hourlyData[index].date);
-              final supposedIcon = hourlyData[index].weather.first.icon;
-              return new Container(
-                padding: EdgeInsets.symmetric(horizontal: 5), //for spacing between elements
-                child: Column(
-                  children: <Widget>[
-                    Text(
-                      "${hourlyData[index].temp.round()}\u00b0", //display temperature in degrees
-                      textScaler: TextScaler.linear(1.5),
-                    ),
-                    Icon(IconMap[supposedIcon]), //gets the icon from icon map
-                    Text("${hourlyData[index].windSpeed.toStringAsPrecision(2)} km/h"),
-                    Text("${date.hour.toString().padLeft(2, '0')}:00"), //display the forecast time
-                  ],
-                )
-              );
-            })
-          ),
+        height: 190,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8), //spacing from the edge
+              child: Text(
+                "24 Hour Forecast:",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Center(
+              child: SizedBox(
+                height: 120, //constrained height to avoid infinite height issues
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: List<Widget>.generate(24, (int index) {
+                    DateTime date = DateTime.fromMillisecondsSinceEpoch(hourlyData[index].date);
+                    final supposedIcon = hourlyData[index].weather.first.icon;
+                    return Container(
+                      padding: EdgeInsets.symmetric(horizontal: 5),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            "${hourlyData[index].temp.round()}\u00b0",
+                            textScaler: TextScaler.linear(1.5),
+                          ),
+                          Icon(IconMap[supposedIcon]),
+                          Text("${hourlyData[index].windSpeed.toStringAsPrecision(2)} km/h"),
+                          Text("${date.hour.toString().padLeft(2, '0')}:00"),
+                        ],
+                      ),
+                    );
+                  }),
+                ),
+              ),
+            ),
+          ],
         )
       )
     );

@@ -22,14 +22,20 @@ void showErrorDialog(BuildContext context, Object error, VoidCallback onRetry) {
               Geolocator.openAppSettings(); //only place where geolocator package is used here
               onRetry();
             },
-            child: Text("App Settings"),
+            child: Text(
+              "App Settings",
+              style: TextStyle(color: Colors.blueAccent),
+            ),
           ),
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
               onRetry();
             },
-            child: Text("Retry"),
+            child: Text(
+              "Retry",
+              style: TextStyle(color: Colors.blueAccent),
+            ),
           ),
         ],
         actionsAlignment: MainAxisAlignment.spaceBetween,

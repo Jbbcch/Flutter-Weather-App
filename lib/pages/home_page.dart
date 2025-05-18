@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_weather_app/pages/weekly_page.dart';
 
 import '/providers/weather_provider.dart';
 import '/providers/geolocation_provider.dart';
@@ -8,8 +9,6 @@ import '/widgets/hourly_list.dart';
 import '/widgets/error_widget.dart';
 import '/pages/error_placeholder.dart';
 import '/models/gradients.dart';
-
-//TODO: split this. it's getting crowded.
 
 class HomePage extends ConsumerWidget {
   const HomePage({super.key});
@@ -36,14 +35,17 @@ class HomePage extends ConsumerWidget {
             decoration: BoxDecoration(gradient: gradient),
             child: SafeArea(
               child: SingleChildScrollView(
-                padding: EdgeInsets.all(16),
+                padding: EdgeInsets.all(10),
                 child: Column(
+                  spacing: 10,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     WeatherTiles(weatherData: weather),
-                    SizedBox(height: 10),
                     TextButton(
-                      onPressed: () => print("pressed"),
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => WeeklyForecastPage(weatherData: weather))
+                      ),
                       child: Container(
                         height: 40,
                         decoration: BoxDecoration(
@@ -60,12 +62,6 @@ class HomePage extends ConsumerWidget {
                           ),
                         ),
                       ),
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      "Hourly Weather:",
-                      textScaleFactor: 1.4,
-                      style: TextStyle(color: Colors.white),
                     ),
                     HourlyList(hourlyData: weather.hourly),
                   ],
