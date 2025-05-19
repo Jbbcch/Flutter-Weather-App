@@ -4,7 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '/models/city_model.dart';
 
-final _geodbUrl = Uri.parse("https://wft-geo-db.p.rapidapi.com/v1/geo/cities ");
+final _geodbUrl = Uri.parse("https://wft-geo-db.p.rapidapi.com/v1/geo/cities");
 
 Future<Map<String, dynamic>> _getCitiesJson({
   required String namePrefix, 

@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_weather_app/providers/weather_provider.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
+
+
+import '/models/city_model.dart';
+import '/providers/cities_provider.dart';
+import '/providers/weather_provider.dart';
+import '/services/cities_service.dart';
 
 class SearchPage extends ConsumerStatefulWidget {
   const SearchPage({super.key});
@@ -16,14 +22,21 @@ class _SearchPageState extends ConsumerState<SearchPage> {
       appBar: AppBar(
         title: Text("Search Page"),
       ),
-      body: TextButton(
-        onPressed: () {
-          ref.read(locationRequestProvider.notifier).state = 
-          WeatherRequest(lat: 55.755825, lon: 37.617298);
-          Navigator.pop(context);
+      body: TypeAheadField<City>(
+        debounceDuration: Duration(milliseconds: 500),
+        itemBuilder: (context, city) {
+          return ListTile(
+            title: Text('${city.name}, ${city.country}'),
+          );
+        }, 
+        suggestionsCallback: (pattern) async {
+          if (pattern.length < 2) return [];
+          return await getCities(pattern);
         },
-        child: Text("Get Test Location")
-      ),
+        onSelected: (city) {
+          ref.read(locationRequestProvider.notifier).state = WeatherRequest(lat: city.latitude, lon: city.longitude);
+        },
+      )
     );
   }
 }
