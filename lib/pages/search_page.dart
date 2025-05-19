@@ -4,6 +4,7 @@ import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 
 import '/models/city_model.dart';
+import '/providers/cities_provider.dart';
 import '/providers/weather_provider.dart';
 import '/services/cities_service.dart';
 
@@ -17,6 +18,8 @@ class SearchPage extends ConsumerStatefulWidget {
 class _SearchPageState extends ConsumerState<SearchPage> {
   @override
   Widget build(BuildContext context) {
+    final favourites = ref.watch(cityFavouritesProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Search Page"),
@@ -24,31 +27,103 @@ class _SearchPageState extends ConsumerState<SearchPage> {
       body: Align(
         alignment: Alignment.topCenter,
         child: Container(
-          width: 300,
-          child: TypeAheadField<City>(
-            debounceDuration: Duration(milliseconds: 500),
-            itemBuilder: (context, city) {
-              return ListTile(
-                title: Text('${city.name}, ${city.country}'),
-                trailing: IconButton(
-                  icon: Icon(Icons.add),
-                  onPressed: () {
-                    addCityToFavourites(city);
-                  },
+          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+          child: Column(
+            children: <Widget>[
+              TypeAheadField<City>(
+                builder: (context, textController, focusNode) {
+                  return TextField(
+                    controller: textController,
+                    focusNode: focusNode,
+                    style: TextStyle(color: Colors.white),
+                    decoration: InputDecoration(
+                      hintText: "Search city",
+                      hintStyle: TextStyle(color: Colors.white60),
+                      border: OutlineInputBorder(),
+                    ),
+                  );
+                },
+                debounceDuration: Duration(milliseconds: 500),
+                itemBuilder: (context, city) {
+                  return ListTile(
+                    title: Text('${city.name}, ${city.country}'),
+                    trailing: IconButton(
+                      icon: Icon(Icons.add),
+                      onPressed: () {
+                        addCityToFavourites(city);
+                        ref.invalidate(cityFavouritesProvider);
+                      },
+                    ),
+                  );
+                },
+                suggestionsCallback: (pattern) async {
+                  if (pattern.length < 2) return [];
+                  return await getCities(pattern);
+                },
+                onSelected: (city) {
+                  ref.read(locationRequestProvider.notifier).state = WeatherRequest(
+                    lat: city.latitude,
+                    lon: city.longitude,
+                    city: city
+                  );
+                  Navigator.pop(context);
+                },
+              ),
+              SizedBox(height: 20),
+              Text(
+                "Favourite Cities:",
+                style: TextStyle(fontSize: 20),
+              ),
+              SizedBox(height: 10),
+              //show favourites
+              favourites.when(
+                data: (favs) => SingleChildScrollView(
+                  child: Column(
+                    children: favs.map((city) => TextButton(
+                        child: Container(
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(16)
+                          ),
+                          child: Text(
+                            '${city.name}, ${city.country}',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white
+                            ),
+                          ),
+                        ),
+                        onPressed: () {
+                          ref.read(locationRequestProvider.notifier).state = WeatherRequest(
+                            lat: city.latitude,
+                            lon: city.longitude,
+                            city: city
+                          );
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ).toList(),
+                  ),
                 ),
-              );
-            },
-            suggestionsCallback: (pattern) async {
-              if (pattern.length < 2) return [];
-              return await getCities(pattern);
-            },
-            onSelected: (city) {
-              ref.read(locationRequestProvider.notifier).state = WeatherRequest(lat: city.latitude, lon: city.longitude);
-              Navigator.pop(context);
-            },
-          )
-        )
-      )
+                loading: () => Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 20),
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+                error: (e, _) => Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: Text(
+                    "Could not get favourite locations",
+                    style: TextStyle(color: Colors.blueGrey),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

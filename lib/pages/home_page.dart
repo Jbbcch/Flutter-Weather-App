@@ -17,6 +17,7 @@ class HomePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final weatherData = ref.watch(adaptiveWeatherProvider); //load weather data
+    final currentCity = ref.watch(locationRequestProvider); //load current city
 
     return weatherData.when(
       data: (weather) {
@@ -38,7 +39,10 @@ class HomePage extends ConsumerWidget {
                 MaterialPageRoute(builder: (context) => SearchPage())
               ),
             ),
-            title: Text(weather.timezone),
+            title: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text("${currentCity?.city.name ?? weather.timezone}, ${currentCity?.city.country ?? ""}"),
+            ),
             backgroundColor: Colors.transparent,
             elevation: 0,
           ),
@@ -57,7 +61,7 @@ class HomePage extends ConsumerWidget {
                     TextButton(
                       onPressed: () => Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => WeeklyForecastPage(weatherData: weather))
+                        MaterialPageRoute(builder: (context) => WeeklyForecastPage(weatherData: weather, city: currentCity?.city,))
                       ),
                       child: Container(
                         height: 40,

@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import '/models/weather_model.dart';
+import '/models/city_model.dart';
 import '/widgets/hourly_list.dart';
 
 class WeeklyForecastPage extends StatelessWidget {
   final Weather weatherData;
+  final City? city;
 
-  const WeeklyForecastPage({super.key, required this.weatherData});
+  const WeeklyForecastPage({super.key, required this.weatherData, required this.city});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +17,10 @@ class WeeklyForecastPage extends StatelessWidget {
           icon: Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
         ),
-        title: Text(weatherData.timezone),
+        title: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text("${city?.name ?? weatherData.timezone}, ${city?.country ?? ""}"),
+            ),
         backgroundColor: Colors.transparent,
       ),
       body: SingleChildScrollView(

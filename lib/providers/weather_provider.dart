@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '/models/city_model.dart';
 import '/models/weather_model.dart';
 import '/services/weather_service.dart';
 import 'geolocation_provider.dart';
@@ -8,10 +9,12 @@ class WeatherRequest {
   final double lat;
   final double lon;
   final String units;
+  final City city;
 
   const WeatherRequest({
     required this.lat,
     required this.lon,
+    required this.city,
     this.units = "metric",
   });
 }
