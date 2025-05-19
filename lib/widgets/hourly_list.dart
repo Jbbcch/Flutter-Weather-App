@@ -53,7 +53,7 @@ class HourlyList extends StatelessWidget {
                             textScaler: TextScaler.linear(1.5),
                           ),
                           Icon(IconMap[supposedIcon]),
-                          Text("${hourlyData[index].windSpeed.toStringAsPrecision(2)} km/h"),
+                          Text("${(hourlyData[index].windSpeed * 3.6).toStringAsFixed(1)} km/h"),
                           Text("${date.hour.toString().padLeft(2, '0')}:00"),
                         ],
                       ),

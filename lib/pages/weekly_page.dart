@@ -60,7 +60,7 @@ class WeeklyForecastPage extends StatelessWidget {
                           style: TextStyle(fontSize: 16),
                         ),
                         Text(
-                          "${day.windSpeed.toStringAsFixed(1)} km/h", //wind speed
+                          "${(day.windSpeed * 3.6).toStringAsFixed(1)} km/h", //wind speed
                           style: TextStyle(fontSize: 16),
                         ),
                       ],

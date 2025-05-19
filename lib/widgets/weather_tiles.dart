@@ -207,7 +207,7 @@ class WeatherTiles extends StatelessWidget {
                                   fit: BoxFit.scaleDown,
                                   alignment: Alignment.centerLeft,
                                   child: Text(
-                                    "${weatherData.current.windSpeed.toStringAsFixed(1)} km/h",
+                                    "${(weatherData.current.windSpeed * 3.6).toStringAsFixed(1)} km/h",
                                     textScaleFactor: 1.2,
                                     overflow: TextOverflow.ellipsis,
                                   ),

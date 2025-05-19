@@ -40,9 +40,10 @@ Future<Coordinates> determinePosition() async {
       '\nPlease turn on geolocation and retry.'
     );
   }
-
   //if this is reached, then the location should be available
-  final location = await Geolocator.getCurrentPosition().timeout(
+  final location = await Geolocator.getCurrentPosition(
+    desiredAccuracy: LocationAccuracy.low //this can't even stop accurate location popup from showing up. whatever.
+  ).timeout(
     Duration(seconds: 5),
     //the gps gets confused if turned on mid-runtime. this is here to address that
     //10 seconds is as fast as i could get this to work
