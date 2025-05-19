@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_weather_app/pages/search_page.dart';
 import 'package:flutter_weather_app/pages/weekly_page.dart';
 
 import '/providers/weather_provider.dart';
@@ -15,7 +16,7 @@ class HomePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final weatherData = ref.watch(localWeatherProvider); //load weather data
+    final weatherData = ref.watch(adaptiveWeatherProvider); //load weather data
 
     return weatherData.when(
       data: (weather) {
@@ -24,7 +25,13 @@ class HomePage extends ConsumerWidget {
 
         return Scaffold(
           appBar: AppBar(
-            leading: Icon(Icons.search),
+            leading: IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SearchPage())
+              ),
+            ),
             title: Text(weather.timezone),
             backgroundColor: Colors.transparent,
             elevation: 0,
