@@ -25,6 +25,12 @@ class HomePage extends ConsumerWidget {
 
         return Scaffold(
           appBar: AppBar(
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(Icons.location_pin),
+                onPressed: () => ref.read(locationRequestProvider.notifier).state = null
+              ),
+            ],
             leading: IconButton(
               icon: Icon(Icons.search),
               onPressed: () => Navigator.push(

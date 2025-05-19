@@ -1,6 +1,7 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '/models/city_model.dart';
 
@@ -38,6 +39,29 @@ Future<Map<String, dynamic>> _getCitiesJson({
 //get cities as list from json
 Future<List<City>> getCities(String query) async {
   final jsonData = await _getCitiesJson(namePrefix: query);
-  final data = jsonData['data'] as List<dynamic>;
-  return data.map((e) => City.fromJson(e)).toList();
+  try {
+    final data = jsonData['data'] as List<dynamic>;
+    return data.map((e) => City.fromJson(e)).toList();
+  }
+  catch (e) {
+    print("i don't care, cry about it");  //superb error handling
+  }
+  return [];
+}
+
+Future<void> addCityToFavourites(City city) async {
+  final cityString = city.toJsonString();
+  final prefs = await SharedPreferences.getInstance();
+  List<String> saved = prefs.getStringList('favourite_cities') ?? [];
+
+  if (!saved.contains(cityString)) {
+    saved.add(cityString);
+    await prefs.setStringList('favourite_cities', saved);
+  }
+}
+
+Future<List<City>> getCityFavourites() async {
+  final prefs = await SharedPreferences.getInstance();
+  List<String> saved = prefs.getStringList('favourite_cities') ?? [];
+  return List.of(saved.map((e) => City.fromJson(jsonDecode(e))));
 }
