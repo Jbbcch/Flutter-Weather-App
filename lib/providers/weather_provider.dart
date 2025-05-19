@@ -16,8 +16,22 @@ class WeatherRequest {
   });
 }
 
+//watch its state to determine whether a request is passed or not
+final locationRequestProvider = StateProvider<WeatherRequest?>((ref) => null);
+
+//uses two other providers and a weather request provider to determine which method to use
+final adaptiveWeatherProvider = FutureProvider<Weather>((ref) {
+  final locationRequest = ref.watch(locationRequestProvider);
+  
+  if (locationRequest == null) {
+    return ref.watch(localWeatherProvider.future);
+  } else {
+    return ref.watch(locationWeatherProvider(locationRequest).future);
+  }
+});
+
 //uses parameters from WeatherRequest and weather_service to provide weather
-final weatherProvider = FutureProvider.family<Weather, WeatherRequest>((ref, request) async {
+final locationWeatherProvider = FutureProvider.family<Weather, WeatherRequest>((ref, request) async {
   return await getWeather(request.lat, request.lon, units: request.units);
 });
 
