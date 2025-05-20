@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_weather_app/pages/search_page.dart';
-import 'package:flutter_weather_app/pages/weekly_page.dart';
+import '/pages/search_page.dart';
+import '/pages/weekly_page.dart';
 
 import '/providers/weather_provider.dart';
 import '/providers/geolocation_provider.dart';
