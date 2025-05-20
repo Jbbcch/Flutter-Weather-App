@@ -102,6 +102,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                               ),
                               child: ListTile(
                                 title: FittedBox(
+                                  alignment: Alignment.centerLeft,
                                   fit: BoxFit.scaleDown,
                                   child: Text(
                                     '${city.name}, ${city.country}',
