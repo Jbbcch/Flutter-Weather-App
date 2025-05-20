@@ -36,7 +36,7 @@ class HomePage extends ConsumerWidget {
               icon: Icon(Icons.search),
               onPressed: () => Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => SearchPage())
+                MaterialPageRoute(builder: (context) => SearchPage(gradient: gradient,))
               ),
             ),
             title: FittedBox(
@@ -61,7 +61,7 @@ class HomePage extends ConsumerWidget {
                     TextButton(
                       onPressed: () => Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => WeeklyForecastPage(weatherData: weather, city: currentCity?.city,))
+                        MaterialPageRoute(builder: (context) => WeeklyForecastPage(weatherData: weather, city: currentCity?.city, gradient: gradient,))
                       ),
                       child: Container(
                         height: 40,

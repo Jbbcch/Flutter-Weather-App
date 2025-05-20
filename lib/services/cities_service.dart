@@ -60,6 +60,15 @@ Future<void> addCityToFavourites(City city) async {
   }
 }
 
+Future<void> removeCityToFavourites(City city) async {
+  final cityString = city.toJsonString();
+  final prefs = await SharedPreferences.getInstance();
+  List<String> saved = prefs.getStringList('favourite_cities') ?? [];
+
+  saved.remove(cityString);
+  await prefs.setStringList('favourite_cities', saved);
+}
+
 Future<List<City>> getCityFavourites() async {
   final prefs = await SharedPreferences.getInstance();
   List<String> saved = prefs.getStringList('favourite_cities') ?? [];
